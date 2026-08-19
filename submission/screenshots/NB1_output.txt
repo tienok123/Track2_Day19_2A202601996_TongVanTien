@@ -1,0 +1,42 @@
+NB1 — Embeddings & Vector Indexing
+====================================
+
+[1] Corpus size: 1000 docs
+First doc:
+{
+  "doc_id": "frontend_074",
+  "topic": "frontend",
+  "title": "Frontend: hỗ trợ ngoại tuyến qua service worker",
+  "text": "Khi triển khai ở quy mô lớn, frontend đòi hỏi phải hỗ trợ ngoại tuyến qua service worker. ..."
+}
+
+[2] Loading embedding model (BAAI/bge-small-en-v1.5)...
+Vector dim: 384
+First 8 values: [-0.05813070759177208, -0.03399702161550522, -0.02018573135137558, -0.08147742599248886, 0.07339788973331451, 0.028593173250555992, -0.024054991081357002, 0.007095828652381897]
+
+[3] Qdrant in-memory collection created: lab19 (384-dim, COSINE distance)
+
+[4] Embedding and indexing 1000 docs in batches of 64...
+Indexed: 1000 vectors
+ASSERTION PASSED: 1000 vectors indexed
+
+[5] First similarity search:
+Query: 'cloud computing và tự động mở rộng'
+Top-5:
+  1. [    cloud] score=0.804  Điện toán đám mây: tự động mở rộng theo lưu lượng
+  2. [    cloud] score=0.787  Điện toán đám mây: tự động mở rộng theo lưu lượng
+  3. [    cloud] score=0.775  Điện toán đám mây: tự động mở rộng theo lưu lượng
+  4. [    cloud] score=0.774  Điện toán đám mây: tự động mở rộng theo lưu lượng
+  5. [ data_eng] score=0.763  Data engineering: phân vùng theo ngày để tối ưu query
+
+[6] Paraphrase query search:
+Query (paraphrase): 'phương pháp tự động mở rộng hạ tầng theo lưu lượng người dùng'
+  [    cloud] score=0.805  Điện toán đám mây: tự động mở rộng theo lưu lượng
+  [    cloud] score=0.805  Điện toán đám mây: tự động mở rộng theo lưu lượng
+  [    cloud] score=0.803  Điện toán đám mây: tự động mở rộng theo lưu lượng
+  [    cloud] score=0.800  Điện toán đám mây: tự động mở rộng theo lưu lượng
+  [    cloud] score=0.800  Điện toán đám mây: tự động mở rộng theo lưu lượng
+
+KEY OBSERVATION: Paraphrase query (no word "cloud" in query) STILL returns
+top-5 results from `cloud` topic cluster. This is the semantic power of
+embedding-based vector search — clusters by meaning, not keyword match.

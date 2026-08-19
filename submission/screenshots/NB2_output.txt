@@ -1,0 +1,35 @@
+NB2 — Hybrid Search: BM25 + Vector + RRF
+==========================================
+
+[1] Loaded 1000 docs
+Built BM25 index
+Built vector index (Qdrant in-memory)
+BM25 + vector indices ready
+
+[2] Test query: co giãn linh hoạt theo nhu cầu sử dụng
+  keyword top-3:  ['mobile_082', 'mobile_093', 'mobile_092']
+  semantic top-3: ['ai_ml_048', 'cloud_053', 'ai_ml_025']
+  hybrid top-3:   ['cloud_016', 'mobile_082', 'ai_ml_048']
+
+[3] Precision@10 (avg over 50 queries):
+  Keyword (BM25)   : 77.8%
+  Semantic (vector): 73.2%
+  Hybrid  (RRF=60) : 78.6%   <- wins
+
+[4] Precision@10 by query type:
+
+  type           n       kw     sem     hyb
+  exact         15   96.7%  88.7%  96.7%
+  paraphrase    15   33.3%  24.0%  32.0%
+  mixed         20   97.0%  98.5% 100.0%   <- hybrid strongest here
+
+ANALYSIS:
+- Exact queries: BM25 strong due to verbatim term overlap. Hybrid ties.
+- Paraphrase: weak across all modes (model is EN-trained, weak on VN paraphrase).
+  Switching to bge-m3 (multilingual, Docker path) would boost semantic.
+- Mixed queries: Hybrid WINS at 100% — combines exact-match + semantic signal.
+
+CONCLUSION:
+- Hybrid wins overall thanks to robust performance on mixed queries.
+- Pure BM25 sufficient when latency budget is tight + 100% exact queries.
+- Pure vector sufficient for 100% semantic tasks (image search).
